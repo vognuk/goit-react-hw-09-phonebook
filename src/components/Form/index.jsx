@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { useState } from 'react'
 import { CSSTransition } from 'react-transition-group'
 // import Heading from '../Heading'
 import NotificationNumberExist from '../NotificationNumberExist'
@@ -11,136 +11,135 @@ import * as selectors from '../../redux/contacts/contactsSelectors'
 import operations from '../../redux/contacts/contactsOperations'
 import { Button, TextField } from '@material-ui/core'
 
-class Form extends Component {
-  static propTypes = {
-    name: PropTypes.string,
-    number: PropTypes.string,
-    contacts: PropTypes.arrayOf(
-      PropTypes.exact({
-        id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        number: PropTypes.string.isRequired,
-      })
-    ),
-    onChange: PropTypes.func,
-    onSubmit: PropTypes.func,
-    disabled: PropTypes.bool,
+const Form = ({ contacts, addContact, closeModal }) => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+  const [sameContact, setSameContact] = useState(false);
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
+
+      case 'number':
+        setNumber(value);
+        break;
+
+      default:
+        return;
+    }
   };
 
-  state = {
-    name: '',
-    number: '',
-    sameContact: false,
-  };
-
-  handleChange = ({ target }) => {
-    const { name, value } = target;
-    this.setState({ [name]: value });
-  };
-
-  handleSubmit = (e) => {
-    const { name, number } = this.state;
+  const handleSubmit = e => {
     const contact = {
       name,
       number,
     };
-    console.log(this.state);
 
     e.preventDefault();
 
-    if (this.props.contacts.some(({ number }) => number === contact.number)) {
-      this.setState({ sameContact: true });
+    if (contacts.some(({ number }) => number === contact.number)) {
+      setSameContact(true);
       setTimeout(() => {
-        this.setState({ sameContact: false });
+        setSameContact(false);
       }, 500);
       return;
     }
 
     if (validatePhoneNumber(number) === true) {
-      this.setState({ name, number });
-      this.props.addContact(contact);
-      this.reset();
-      this.props.closeModal();
+      setName(name);
+      setNumber(number);
+      addContact(contact);
+      setName('');
+      setNumber('');
+      closeModal();
     } else {
       alert("Enter correct number, please")
+      // throwerror
     }
-
   };
 
-  reset() {
-    this.setState({
-      name: '',
-      number: ''
-    });
-  }
 
-  render() {
-    const { name, number, sameContact } = this.state;
-    return (
-      <>
-        <div className="heading">
-          {/* <Heading /> */}
+  return (
+    <>
+      <div className="heading">
+        {/* <Heading /> */}
 
-          <CSSTransition
-            in={sameContact}
-            timeout={500}
-            classNames={Animation}
-            unmountOnExit
-          >
-            <NotificationNumberExist message="The contact is already exists." />
-          </CSSTransition>
-        </div>
-        <form className={s.form}
-          onSubmit={this.handleSubmit}
+        <CSSTransition
+          in={sameContact}
+          timeout={500}
+          classNames={Animation}
+          unmountOnExit
         >
-          <label className={s.label}>
-            {/* Name <span className={s.star}>&#42;</span> */}
-            <TextField
-              className={s.input}
-              type='text'
-              name='name'
-              placeholder='Enter the name'
-              value={name}
-              onChange={this.handleChange}
-              required
-              variant="outlined"
-            />
-          </label>
-          <label className={s.label}>
-            {/* Number <span className={s.star}>&#42;</span> */}
-            <TextField
-              className={s.input}
-              type='number'
-              name='number'
-              placeholder='+380'
-              value={number}
-              maxLength="13"
-              onChange={this.handleChange}
-              required
-              variant="outlined"
-            />
-            <span className={s.rule}>
-              {/* <span className={s.star}>&#42;</span> - obligatory fields. */}
-            </span>
-          </label>
-          <button
-            className={s.button}
-            disabled={false}
-            onSubmit={this.checkContact}
+          <NotificationNumberExist message="The contact is already exists." />
+        </CSSTransition>
+      </div>
+      <form className={s.form}
+        onSubmit={handleSubmit}
+      >
+        <label className={s.label}>
+          {/* Name <span className={s.star}>&#42;</span> */}
+          <TextField
+            className={s.input}
+            type='text'
+            name='name'
+            placeholder='Enter the name'
+            value={name}
+            onChange={handleChange}
+            required
+            variant="outlined"
+          />
+        </label>
+        <label className={s.label}>
+          {/* Number <span className={s.star}>&#42;</span> */}
+          <TextField
+            className={s.input}
+            type='number'
+            name='number'
+            placeholder='+380'
+            value={number}
+            maxLength="13"
+            onChange={handleChange}
+            required
+            variant="outlined"
+          />
+          <span className={s.rule}>
+            {/* <span className={s.star}>&#42;</span> - obligatory fields. */}
+          </span>
+        </label>
+        <button
+          className={s.button}
+          // onSubmit={Form.propTypes.checkContact} //?
+          disabled={false}
+        >
+          <Button
+            variant="contained"
+            color="primary"
           >
-
-            <Button
-              variant="contained"
-              color="primary"
-            >
-              Add contact
+            Add contact
               </Button>
-          </button>
-        </form>
-      </>
-    );
-  }
+        </button>
+      </form>
+    </>
+  );
 }
+
+Form.propTypes = {
+  name: PropTypes.string,
+  number: PropTypes.string,
+  contacts: PropTypes.arrayOf(
+    PropTypes.exact({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      number: PropTypes.string.isRequired,
+    })
+  ),
+  onChange: PropTypes.func,
+  onSubmit: PropTypes.func,
+  disabled: PropTypes.bool,
+};
 
 const mapStateToProps = state => {
   return {
