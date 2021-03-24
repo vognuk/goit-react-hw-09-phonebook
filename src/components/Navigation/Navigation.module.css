@@ -1,0 +1,10 @@
+.link{
+    font-size: 12px;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #3544ab;
+}
+
+.link:visited {
+    color: #3544ab;
+}

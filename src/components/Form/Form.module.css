@@ -1,0 +1,56 @@
+/* .star {
+  font-size: 14px;
+  color: red;
+} */
+
+/* .rule {
+  font-size: 10px;
+} */
+
+.form {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: unset;
+  flex-wrap: wrap;
+  width: 350px;
+  height: 250px;
+
+  background-color: white;
+  border-radius: 5px;
+  padding: 35px 10px 5px 10px;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.input {
+  width:100%;
+
+  border-style: none;
+  outline: none;
+  cursor: pointer;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+   -webkit-appearance: none;
+    margin: 0;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px auto 10px auto;
+  width: 150px;
+  font-size: 14px;
+  white-space:  nowrap;
+  background-color: transparent;
+  border: none;
+}
+
