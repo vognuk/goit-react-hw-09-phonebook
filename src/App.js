@@ -1,4 +1,4 @@
-import React, { Component, Suspense, lazy } from 'react'
+import React, { useEffect, Suspense, lazy } from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { authOperations } from './redux/auth'
@@ -14,49 +14,48 @@ const RegisterView = lazy(() => import('./views/RegisterView'));
 const LoginView = lazy(() => import('./views/LoginView'));
 // const ContactsView = lazy(() => import('./views/ContactsView'));
 
-class App extends Component {
-  componentDidMount() {
-    this.props.onGetCurretnUser();
-    // this.props.initContacts();
-  }
+const App = ({ onGetCurretnUser, filter }) => {
+  useEffect(() => {
+    onGetCurretnUser();
+  },
+    []
+  );
 
-  filterContacts = e => {
-    this.props.filterContacts(e.target.value);
-  };
+  // const filterContacts = e => {
+  //   filter(e.target.value);
+  // };
 
-  render() {
-    return (
-      <Container maxWidth="sm">
-        <AppBar />
-        <Suspense fallback={<p>Loading...</p>}> {/*fallback={<Preloader />}>*/}
-          <Switch>
-            <Route
-              exact
-              path={routes.homeView}
-              component={HomeView} />
-            <PublicRoute
-              restricted
-              redirectTo='/contacts'
-              path={routes.loginPage}
-              component={LoginView}
-            />
-            <PublicRoute
-              restricted
-              redirectTo='/contacts'
-              path={routes.registerPage}
-              component={RegisterView}
-            />
-            <PrivateRoute
-              path={routes.contactsPage}
-              component={ContactsView}
-            />
-            <Redirect to={routes.homeView} />
-          </Switch>
-        </Suspense>
-      </Container>
-    );
-  }
-}
+  return (
+    <Container maxWidth="sm">
+      <AppBar />
+      <Suspense fallback={<p>Loading...</p>}> {/*fallback={<Preloader />}>*/}
+        <Switch>
+          <Route
+            exact
+            path={routes.homeView}
+            component={HomeView} />
+          <PublicRoute
+            restricted
+            redirectTo='/contacts'
+            path={routes.loginPage}
+            component={LoginView}
+          />
+          <PublicRoute
+            restricted
+            redirectTo='/contacts'
+            path={routes.registerPage}
+            component={RegisterView}
+          />
+          <PrivateRoute
+            path={routes.contactsPage}
+            component={ContactsView}
+          />
+          <Redirect to={routes.homeView} />
+        </Switch>
+      </Suspense>
+    </Container>
+  );
+};
 
 const mapDispatchToProps = {
   onGetCurretnUser: authOperations.getCurrentUser,

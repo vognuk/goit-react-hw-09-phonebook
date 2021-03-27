@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import PropTypes from 'prop-types'
 
 import { connect } from 'react-redux'
@@ -10,91 +10,79 @@ import Filter from '../components/Filter'
 import Modal from '../components/Modal'
 import { Button } from '@material-ui/core'
 
-class ContactsView extends Component {
-    componentDidMount() {
-        this.props.initContacts();
-        window.addEventListener("keydown", this.handleKeyDown);
-    }
+const ContactsView = ({
+    initContacts,
+    initialValue,
+    filter,
+    contacts,
+    delContact }) => {
 
-    componentWillUnmount() {
-        window.removeEventListener("keydown", this.handleKeyDown);
-    }
+    const [showModal, setShowModal] = useState(false);
 
-    static propTypes = {
-        onDelete: PropTypes.func,
-        contacts: PropTypes.arrayOf(
-            PropTypes.exact({
-                id: PropTypes.string.isRequired,
-                name: PropTypes.string.isRequired,
-                number: PropTypes.string.isRequired,
-            })
-        ),
-        // onClick: PropTypes.func.isRequired,
-    };
-
-    state = {
-        showModal: false
-    };
-
-    toggleModal = () => {
-        this.setState(({ showModal }) => ({
-            showModal: !showModal,
-        }));
-    };
-
-    handleKeyDown = (e) => {
+    const handleKeyDown = e => {
         if (e.code === "Escape") {
-            this.setState({ showModal: false });
+            setShowModal(false);
         }
     };
 
-    handleBackdropClick = (e) => {
-        if (e.currentTarget === e.target) {
+    useEffect(() => {
+        initContacts();
+        window.addEventListener("keydown", handleKeyDown);
+    },
+        [handleKeyDown, initContacts]
+    );
 
-            this.setState(({ showModal }) => ({
-                showModal: !showModal,
-            }));
-        }
+    const toggleModal = () => {
+        setShowModal(!showModal);
     };
 
-    closeModal = () => {
-        this.setState({ showModal: false });
-    }
+    const closeModal = () => {
+        setShowModal(false);
+    };
 
-    render() {
-        // const { contacts, name, number } = this.props;
-        return (<div>
-            <div style={{ marginTop: "10px", marginLeft: "10px" }}>
-                <Button
-                    onClick={this.toggleModal}
-                    variant="contained"
-                    color="primary"
-                >
-                    New contact
+    return (<div>
+        <div style={{ marginTop: "10px", marginLeft: "10px" }}>
+            <Button
+                onClick={toggleModal}
+                variant="contained"
+                color="primary"
+            >
+                New contact
             </Button>
-            </div>
-            <br />
-            <Filter
-                value={this.props.initialValue}
-                onChangeFilter={this.props.filter}
-            />
-            <Contacts
-                contacts={this.props.contacts}
-                onDelete={this.props.delContact}
-            />
-
-            <Fragment>
-                {this.state.showModal &&
-                    <Modal
-                        onClose={this.toggleModal}
-                        closeModal={this.closeModal}
-                    >
-                        <Form closeModal={this.closeModal} />
-                    </Modal>}
-            </Fragment>
         </div>
-        );
-    };
+        <br />
+        <Filter
+            value={initialValue}
+            onChangeFilter={filter}
+        />
+        <Contacts
+            contacts={contacts}
+            onDelete={delContact}
+        />
+
+        <Fragment>
+            {showModal &&
+                <Modal
+                    onClose={toggleModal}
+                    closeModal={closeModal}
+                >
+                    <Form closeModal={closeModal} />
+                </Modal>}
+        </Fragment>
+    </div>
+    );
+};
+
+ContactsView.propTypes = {
+    initialValue: PropTypes.string,
+    onDelete: PropTypes.func,
+    contacts: PropTypes.arrayOf(
+        PropTypes.exact({
+            id: PropTypes.string.isRequired,
+            name: PropTypes.string.isRequired,
+            number: PropTypes.string.isRequired,
+        })
+    ),
 };
 
 const mapStateToProps = state => {

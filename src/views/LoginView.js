@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { authOperations } from '../redux/auth'
 import { Button, TextField } from '@material-ui/core'
@@ -13,71 +13,79 @@ const styles = {
         marginBottom: 15,
     },
 };
+const LoginView = ({ onLogin }) => {
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-class LoginView extends Component {
-    state = {
-        email: '',
-        password: '',
+    const handleChange = e => {
+        const { name, value } = e.target;
+        switch (name) {
+            case 'email':
+                setEmail(value);
+                break;
+
+            case 'password':
+                setPassword(value);
+                break;
+
+            default:
+                return;
+        }
     };
 
-    handleChange = ({ target: { name, value } }) => {
-        this.setState({ [name]: value });
-    };
-
-    handleSubmit = e => {
+    const handleSubmit = e => {
         e.preventDefault();
 
-        this.props.onLogin(this.state);
+        onLogin({ name, email, password });
 
-        this.setState({ name: '', email: '', password: '' });
+        setName('');
+        setEmail('');
+        setPassword('');
     };
 
-    render() {
-        const { email, password } = this.state;
+    return (
+        <div>
+            <h1>Login</h1>
 
-        return (
-            <div>
-                <h1>Login</h1>
+            <form
+                onSubmit={handleSubmit}
+                style={styles.form}
+                autoComplete="off"
+            >
+                <label style={styles.label}>
+                    {/* Почта */}
+                    <TextField
+                        type="email"
+                        name="email"
+                        value={email}
+                        placeholder="e-mail"
+                        onChange={handleChange}
+                    />
+                </label>
 
-                <form
-                    onSubmit={this.handleSubmit}
-                    style={styles.form}
-                    autoComplete="off"
+                <label style={styles.label}>
+                    {/* Пароль */}
+                    <TextField
+                        type="password"
+                        name="password"
+                        value={password}
+                        placeholder="password"
+                        onChange={handleChange}
+
+                    />
+                </label>
+
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
                 >
-                    <label style={styles.label}>
-                        {/* Почта */}
-                        <TextField
-                            type="email"
-                            name="email"
-                            value={email}
-                            placeholder="e-mail"
-                            onChange={this.handleChange}
-                        />
-                    </label>
-
-                    <label style={styles.label}>
-                        {/* Пароль */}
-                        <TextField
-                            type="password"
-                            name="password"
-                            value={password}
-                            placeholder="password"
-                            onChange={this.handleChange}
-
-                        />
-                    </label>
-
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                    >
-                        Enter
+                    Enter
                     </Button>
-                </form>
-            </div>
-        );
-    }
+            </form>
+        </div>
+    );
 }
 
 const mapDispatchToProps = {
