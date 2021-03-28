@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { authOperations } from '../redux/auth'
+import { notificationActions } from '../redux/notification'
 import { Button, TextField } from '@material-ui/core'
 
 const styles = {
@@ -13,7 +14,7 @@ const styles = {
         marginBottom: 15,
     },
 };
-const LoginView = ({ onLogin }) => {
+const LoginView = ({ onLogin, showNotification, notification }) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -34,15 +35,24 @@ const LoginView = ({ onLogin }) => {
         }
     };
 
+
+
     const handleSubmit = e => {
         e.preventDefault();
-
         onLogin({ name, email, password });
 
         setName('');
         setEmail('');
         setPassword('');
+
+        let massage = 'Ошибка в логин';
+        let error = 'Потому что';
+
+        if (email === '') {
+            showNotification({ massage: 'Email is required', error });
+        };
     };
+
 
     return (
         <div>
@@ -90,6 +100,7 @@ const LoginView = ({ onLogin }) => {
 
 const mapDispatchToProps = {
     onLogin: authOperations.logIn,
+    showNotification: notificationActions.errorPopup,
 };
 
 export default connect(null, mapDispatchToProps)(LoginView);

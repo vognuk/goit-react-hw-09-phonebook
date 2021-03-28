@@ -45,7 +45,7 @@ const logIn = credentials => async dispatch => {
         token.set(response.data.token);
         dispatch(authActions.loginSuccess(response.data));
     } catch (error) {
-        console.log("Добавить уведомление об ошибке логина и ее причине(из ответа сервера)", error);
+        console.log(error.message, "Добавить уведомление об ошибке логина и ее причине(из ответа сервера)", error);
         dispatch(authActions.loginError(error.message));
     }
 };
