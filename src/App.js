@@ -1,4 +1,5 @@
 import React, { useEffect, Suspense, lazy } from 'react'
+import { useDispatch, useSelector } from "react-redux";
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { authOperations } from './redux/auth'
@@ -16,12 +17,22 @@ const RegisterView = lazy(() => import('./views/RegisterView'));
 const LoginView = lazy(() => import('./views/LoginView'));
 // const ContactsView = lazy(() => import('./views/ContactsView'));
 
-const App = ({ onGetCurretnUser, filter, notification, showNotification }) => {
+const App = ({ error, authError, showNotification, filter }) => {
+  // const { onGetCurretnUser, showNotification } = useDispatch({
+  //   // onGetCurretnUser: authOperations.getCurrentUser,
+  //   showNotification: notificationActions.errorPopup,
+  // });
+
+  const notification = useSelector(state => state.notification);
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    onGetCurretnUser();
+    dispatch(authOperations.getCurrentUser());
   },
     []
   );
+
+
 
   // useEffect(() => {
   //   console.log("Нотификация работает", notification.massage);
@@ -61,28 +72,32 @@ const App = ({ onGetCurretnUser, filter, notification, showNotification }) => {
           <Redirect to={routes.homeView} />
         </Switch>
       </Suspense>
-      {notification.massage && <div style={{ backgroundColor: 'red', color: '#fff', padding: '15px', position: 'absolute' }}>
+      {notification.message && <div style={{ backgroundColor: 'red', color: '#fff', padding: '15px', position: 'absolute' }}>
         <span>
           <div
-            onClick={() => { showNotification({ massage: '', error: '' }) }}
-          >X</div>
-          {notification.massage}
+            // onClick={() => { showNotification({ message: '', error: '' }) }}
+            onClick={dispatch(notificationActions.errorPopup({ message: '', error: '' }))}
+          >
+            X
+          </div>
+          {notification.message}
+          {/* {notification.error} */}
         </span>
       </div>}
-    </Container>
+    </Container >
   );
 };
 
-const mapStateToProps = state => {
-  console.log(state);
-  return {
-    notification: state.notification,
-  }
-};
+// const mapStateToProps = state => {
+//   // console.log(state.auth.error, state);
+//   return {
+//     notification: state.notification,
+//   }
+// };
 
-const mapDispatchToProps = {
-  onGetCurretnUser: authOperations.getCurrentUser,
-  showNotification: notificationActions.errorPopup,
-};
+// const mapDispatchToProps = {
+//   showNotification: notificationActions.errorPopup,
+// };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;
+// export default connect(mapStateToProps, null)(App);

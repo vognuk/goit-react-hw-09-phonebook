@@ -1,12 +1,14 @@
 import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import s from './Filter.module.css'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux';
 import * as selectors from '../../redux/contacts/contactsSelectors'
 import * as action from '../../redux/contacts/contactsActions'
 import { TextField } from '@material-ui/core'
 
-const Filter = ({ initialValue, onFilterChange }) => {
+const Filter = () => {
+  const initialValue = useSelector(state => selectors.getFilter(state));
+  const dispatch = useDispatch();
 
   return (
     <label className={s.label}>
@@ -17,7 +19,7 @@ const Filter = ({ initialValue, onFilterChange }) => {
           name='filter'
           placeholder='Find contacts by name'
           value={initialValue}
-          onChange={e => onFilterChange(e.target.value)}
+          onChange={e => dispatch(action.changeFilter(e.target.value))}
           variant="outlined"
         ></TextField>
       </div>
@@ -30,12 +32,4 @@ Filter.propTypes = {
   filter: PropTypes.func,
 };
 
-const mapStateToProps = state => ({
-  initialValue: selectors.getFilter(state),
-});
-
-const mapDispatchToProps = {
-  onFilterChange: action.changeFilter,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Filter);
+export default Filter;

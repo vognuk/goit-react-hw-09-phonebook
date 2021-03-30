@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { CSSTransition } from 'react-transition-group'
 // import Heading from '../Heading'
 import NotificationNumberExist from '../NotificationNumberExist'
@@ -11,10 +12,13 @@ import * as selectors from '../../redux/contacts/contactsSelectors'
 import operations from '../../redux/contacts/contactsOperations'
 import { Button, TextField } from '@material-ui/core'
 
-const Form = ({ contacts, addContact, closeModal }) => {
+const Form = ({ closeModal, addContact }) => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
   const [sameContact, setSameContact] = useState(false);
+
+  const contacts = useSelector(state => selectors.getAllContacts(state));
+  const dispatch = useDispatch();
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -141,11 +145,11 @@ Form.propTypes = {
   disabled: PropTypes.bool,
 };
 
-const mapStateToProps = state => {
-  return {
-    contacts: selectors.getAllContacts(state),
-  }
-};
+// const mapStateToProps = state => {
+//   return {
+//     contacts: selectors.getAllContacts(state),
+//   }
+// };
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -153,4 +157,4 @@ const mapDispatchToProps = dispatch => {
   }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form);
+export default connect(null, mapDispatchToProps)(Form);

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from "react-redux"
 import { connect } from 'react-redux'
 import { authOperations } from '../redux/auth'
 import { notificationActions } from '../redux/notification'
@@ -14,10 +15,16 @@ const styles = {
         marginBottom: 15,
     },
 };
-const LoginView = ({ onLogin, showNotification, notification }) => {
+const LoginView = ({ showNotification, authError, filter }) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const dispatch = useDispatch();
+
+    const notification = useSelector(state => state.notification);
+    const authentication = useSelector(state => state.auth.isAuthenticated);
+    // const
 
     const handleChange = e => {
         const { name, value } = e.target;
@@ -35,24 +42,29 @@ const LoginView = ({ onLogin, showNotification, notification }) => {
         }
     };
 
-
-
     const handleSubmit = e => {
         e.preventDefault();
-        onLogin({ name, email, password });
+        dispatch(authOperations.logIn({ email, password }));
+        // setEmail('');
+        // setPassword('');
 
-        setName('');
-        setEmail('');
-        setPassword('');
-
-        let massage = 'Ошибка в логин';
-        let error = 'Потому что';
-
-        if (email === '') {
-            showNotification({ massage: 'Email is required', error });
-        };
+        // handleError();
     };
 
+    const handleError = () => {
+        let message = '';
+        let error = '';
+
+        console.log(authentication);
+
+        // setTimeout(() => {
+        if (email === '') {
+            dispatch(notificationActions.errorPopup({ message: 'Wrong e-mail or password', error }));
+        };
+        // }, 250);
+    }
+
+    // window.onerror = () => console.log("window.onerror");
 
     return (
         <div>
@@ -71,6 +83,7 @@ const LoginView = ({ onLogin, showNotification, notification }) => {
                         value={email}
                         placeholder="e-mail"
                         onChange={handleChange}
+                    // required
                     />
                 </label>
 
@@ -82,7 +95,7 @@ const LoginView = ({ onLogin, showNotification, notification }) => {
                         value={password}
                         placeholder="password"
                         onChange={handleChange}
-
+                    // required
                     />
                 </label>
 
@@ -90,6 +103,7 @@ const LoginView = ({ onLogin, showNotification, notification }) => {
                     type="submit"
                     variant="contained"
                     color="primary"
+                // onClick={handleError}
                 >
                     Enter
                     </Button>
@@ -98,9 +112,20 @@ const LoginView = ({ onLogin, showNotification, notification }) => {
     );
 }
 
-const mapDispatchToProps = {
-    onLogin: authOperations.logIn,
-    showNotification: notificationActions.errorPopup,
-};
+// const mapStateToProps = state => {
+//     console.log(state.auth.error, state);
+//     return {
+//         notification: state.notification,
+//         // authError: state.auth.error,
+//         authentication: state.auth.isAuthenticated,
+//     }
+// };
 
-export default connect(null, mapDispatchToProps)(LoginView);
+// const mapDispatchToProps = {
+//     onLogin: authOperations.logIn,
+//     showNotification: notificationActions.errorPopup,
+// };
+
+// export default connect(mapStateToProps, mapDispatchToProps)(LoginView);
+export default LoginView;
+
