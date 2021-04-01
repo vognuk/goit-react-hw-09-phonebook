@@ -1,18 +1,16 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { CSSTransition } from 'react-transition-group'
-// import Heading from '../Heading'
 import NotificationNumberExist from '../NotificationNumberExist'
 import Animation from '../NotificationNumberExist/Animation.module.css'
 import s from './Form.module.css'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import validatePhoneNumber from '../../utils/validator'
 import * as selectors from '../../redux/contacts/contactsSelectors'
 import operations from '../../redux/contacts/contactsOperations'
 import { Button, TextField } from '@material-ui/core'
 
-const Form = ({ closeModal, addContact }) => {
+const Form = ({ closeModal }) => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
   const [sameContact, setSameContact] = useState(false);
@@ -55,16 +53,15 @@ const Form = ({ closeModal, addContact }) => {
     if (validatePhoneNumber(number) === true) {
       setName(name);
       setNumber(number);
-      addContact(contact);
+      dispatch(operations.addContact(contact));
+
       setName('');
       setNumber('');
       closeModal();
     } else {
       alert("Enter correct number, please")
-      // throwerror
     }
   };
-
 
   return (
     <>
@@ -145,16 +142,4 @@ Form.propTypes = {
   disabled: PropTypes.bool,
 };
 
-// const mapStateToProps = state => {
-//   return {
-//     contacts: selectors.getAllContacts(state),
-//   }
-// };
-
-const mapDispatchToProps = dispatch => {
-  return {
-    addContact: (contact) => dispatch(operations.addContact(contact)),
-  }
-};
-
-export default connect(null, mapDispatchToProps)(Form);
+export default Form;

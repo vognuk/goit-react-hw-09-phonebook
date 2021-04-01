@@ -1,16 +1,16 @@
 import React, { useEffect, Suspense, lazy } from 'react'
 import { useDispatch, useSelector } from "react-redux";
 import { Switch, Route, Redirect } from 'react-router-dom'
-import { connect } from 'react-redux'
 import { authOperations } from './redux/auth'
 import ContactsView from './views/ContactsView'
 import AppBar from './components/AppBar'
-import Container from './components/Container'
+// import Container from './components/Container'
 import routes from './routes/routes'
 import PrivateRoute from './routes/PrivateRoute'
 import PublicRoute from './routes/PublicRoute'
-
 import { notificationActions } from './redux/notification'
+import { ThemeProvider } from '@material-ui/core/styles'
+import { useTheme } from '@material-ui/core/styles'
 
 const HomeView = lazy(() => import('./views/HomeView'));
 const RegisterView = lazy(() => import('./views/RegisterView'));
@@ -32,40 +32,32 @@ const App = ({ error, authError, showNotification, filter }) => {
     []
   );
 
-
-
-  // useEffect(() => {
-  //   console.log("Нотификация работает", notification.massage);
-  // },
-  //   [notification.massage]
-  // );
-
-  // const filterContacts = e => {
-  //   filter(e.target.value);
-  // };
+  const theme = useTheme();
 
   return (
-    <Container maxWidth="sm">
+    <ThemeProvider theme={theme}>
       <AppBar />
       <Suspense fallback={<p>Loading...</p>}> {/*fallback={<Preloader />}>*/}
         <Switch>
           <Route
             exact
+            // redirectTo='/'
             path={routes.homeView}
             component={HomeView} />
           <PublicRoute
             restricted
-            redirectTo='/contacts'
+            redirectTo='/login'
             path={routes.loginPage}
             component={LoginView}
           />
           <PublicRoute
             restricted
-            redirectTo='/contacts'
+            redirectTo='/register'
             path={routes.registerPage}
             component={RegisterView}
           />
           <PrivateRoute
+            redirectTo='/contacts'
             path={routes.contactsPage}
             component={ContactsView}
           />
@@ -84,7 +76,8 @@ const App = ({ error, authError, showNotification, filter }) => {
           {/* {notification.error} */}
         </span>
       </div>}
-    </Container >
+      {/* </Container > */}
+    </ThemeProvider>
   );
 };
 
@@ -100,4 +93,3 @@ const App = ({ error, authError, showNotification, filter }) => {
 // };
 
 export default App;
-// export default connect(mapStateToProps, null)(App);

@@ -1,6 +1,8 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import wellcomePicture from '../images/alf.png'
+import Typography from '@material-ui/core/Typography'
+import { makeStyles } from '@material-ui/core/styles'
+import Container from '@material-ui/core/Container'
 
 const styles = {
     container: {
@@ -9,30 +11,39 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
     },
-    title: {
-        fontWeight: 500,
-        fontSize: 48,
-        textAlign: 'center',
-    },
+
     picture: {
-        width: '70%',
-        marginRight: '15px',
-        marginLeft: '15px',
+        width: '100px',
+        margin: '15px auto 25px auto',
     },
 };
 
-const HomeView = () => (
-    <div style={styles.container}>
-        <h1 style={styles.title}>
-            Wellcome! {' '}
-            <img style={styles.picture} alt="Wellcome" src={wellcomePicture} />
-            {/* </span> */}
-        </h1>
-    </div>
-);
+const useStyles = makeStyles((theme) => ({
+    root: {
+        display: 'flex',
+        '& > *': {
+            margin: theme.spacing(1),
+        },
+    },
+    container: {
+        display: 'flex',
+        flexDirection: 'column',
+        // justifyContent: 'center',
+        // marginTop: '20px',
+    }
 
-const mapDispatchToProps = state => ({
-    wellcomePicture: wellcomePicture,
-});
+}));
 
-export default connect(null, mapDispatchToProps)(HomeView);
+const HomeView = () => {
+    const classes = useStyles();
+    return (
+        <Container>
+            <Typography variant="h4" className={classes.title}>
+                Wellcome to phonebook!
+            </Typography>
+            <img className={styles.picture} alt="Wellcome" src={wellcomePicture} />
+        </Container>
+    )
+};
+
+export default HomeView;

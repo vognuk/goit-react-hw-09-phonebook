@@ -2,47 +2,68 @@ import React from 'react'
 import { useSelector } from "react-redux"
 import { NavLink } from 'react-router-dom'
 import { authSelectors } from '../../redux/auth'
-import Heading from '../Heading'
-// import s from './Navigation.module.css'
+// import Heading from '../Heading'
+import Typography from '@material-ui/core/Typography'
+import { ThemeProvider } from '@material-ui/core/styles'
+import { useTheme } from '@material-ui/core/styles'
+import HomeIcon from '@material-ui/icons/Home'
+import Link from '@material-ui/core/Link'
+import { makeStyles } from '@material-ui/core/styles'
 
-const styles = {
+const useStyles = makeStyles((theme) => ({
+    root: {
+        display: 'flex',
+        width: '100%',
+        '& > *': {
+            margin: theme.spacing(1),
+        },
+    },
+
     link: {
-        display: 'inline-block',
         textDecoration: 'none',
-        padding: 12,
-        fontWeight: 700,
-        color: '#2A363B',
+        color: '#fff',
     },
-    activeLink: {
-        color: '#E84A5F',
-    },
-};
+
+    item: {
+        margin: 'auto 15px auto 15px',
+        color: '#fff',
+    }
+}));
 
 const Navigation = () => {
     const isAuthenticated = useSelector(state => authSelectors.getIsAuthenticated(state));
-
-    return (<nav>
-        <NavLink
-            className="s.link"
-            to="/"
-            exact
-            style={styles.link}
-            activeStyle={styles.activeLink}>
-            {/* Главная */}
-            <Heading />
-            <span role="img" aria-label="Иконка приветствия"></span>
-        </NavLink>
-        {isAuthenticated &&
+    const theme = useTheme();
+    const classes = useStyles();
+    return (
+        <ThemeProvider theme={theme}>
             <NavLink
-                to="/contacts"
+                className="s.link"
+                to="/"
                 exact
-                style={styles.link}
-                activeStyle={styles.activeLink}
             >
-                Contacts
+                <HomeIcon className={classes.link} />
+                <span role="img" aria-label="Иконка приветствия"></span>
             </NavLink>
-        }
-    </nav>)
+
+            {isAuthenticated &&
+                <NavLink
+                    to="/contacts"
+                    exact
+                >
+                    <Typography variant="h6" className={classes.link}>
+                        <Link
+                            className={classes.item}
+                            component="button"
+                            variant="h6"
+                            color='initial'
+                        >
+                            Contacts
+                        </Link>
+                    </Typography>
+                </NavLink>
+            }
+        </ThemeProvider >
+    )
 };
 
 export default Navigation;

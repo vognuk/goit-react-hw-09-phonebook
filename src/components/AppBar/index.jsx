@@ -4,23 +4,37 @@ import Navigation from '../Navigation'
 import UserMenu from '../UserMenu'
 import AuthNav from '../AuthHav'
 import { authSelectors } from '../../redux/auth'
+import AppBarStyle from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import { useTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles'
 
-const styles = {
-    header: {
+const useStyles = makeStyles((theme) => ({
+    wrap: {
         display: 'flex',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        borderBottom: '1px solid #2A363B',
-    },
-};
+        justifyContent: 'space-between',
+        width: '100%',
+        margin: '0px 0px 0px 0px ',
+        padding: '5px 0px 5px 0px'
+    }
+}));
 
 const AppBar = () => {
     const isAuthenticated = useSelector(state => authSelectors.getIsAuthenticated(state));
+    const theme = useTheme();
+    const classes = useStyles();
     return (
-        < div style={styles.header} >
-            <Navigation />
-            { isAuthenticated ? (<UserMenu />) : (<AuthNav />)}
-        </div >
+        <ThemeProvider theme={theme}>
+            <AppBarStyle position="static">
+                <Toolbar>
+                    <Navigation />
+                    {isAuthenticated ?
+                        <UserMenu />
+                        :
+                        <AuthNav />}
+                </Toolbar>
+            </AppBarStyle>
+        </ThemeProvider>
     )
 };
 

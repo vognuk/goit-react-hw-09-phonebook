@@ -1,6 +1,5 @@
 import axios from 'axios'
 import authActions from './authActions'
-import React from 'react'
 
 // axios.defaults.baseURL = 'https://goit-phonebook-api.herokuapp.com';
 

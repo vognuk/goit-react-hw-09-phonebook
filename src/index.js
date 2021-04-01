@@ -9,12 +9,15 @@ import store from './redux/store'
 // import 'fontsource-roboto';
 // import 'modern-normalize/modern-normalize.css';
 // import './styles/base.scss';
+import { StylesProvider } from '@material-ui/core/styles';
 
 ReactDOM.render(
   <Provider store={store.store}>
     <PersistGate loading={null} persistor={store.persistor}>
       <BrowserRouter>
-        <App />
+        <StylesProvider injectFirst>
+          <App />
+        </StylesProvider>
       </BrowserRouter>
     </PersistGate>
   </Provider>,

@@ -3,7 +3,6 @@ import PropTypes from "prop-types"
 import s from "./Modal.module.css"
 
 const Modal = ({ children, handleKeyDown, closeModal }) => {
-  // const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown)

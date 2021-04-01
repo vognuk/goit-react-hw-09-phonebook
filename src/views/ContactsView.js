@@ -41,15 +41,14 @@ const ContactsView = ({
     };
 
     return (<div>
-        <div style={{ marginTop: "10px", marginLeft: "10px" }}>
-            <Button
-                onClick={toggleModal}
-                variant="contained"
-                color="primary"
-            >
-                New contact
+        <Button
+            style={{ margin: '10px auto 10px auto' }}
+            onClick={toggleModal}
+            variant="contained"
+            color="primary"
+        >
+            New contact
             </Button>
-        </div>
         <br />
         <Filter
             value={initialValue}
