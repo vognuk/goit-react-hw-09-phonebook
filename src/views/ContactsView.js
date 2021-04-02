@@ -29,7 +29,7 @@ const ContactsView = ({
         initContacts();
         window.addEventListener("keydown", handleKeyDown);
     },
-        [handleKeyDown, initContacts]
+        []
     );
 
     const toggleModal = () => {

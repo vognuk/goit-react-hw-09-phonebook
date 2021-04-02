@@ -100,7 +100,7 @@ const RegisterView = () => {
                             type="password"
                             name="password"
                             value={password}
-                            placeholder="password"
+                            placeholder="password (at least 7 characters)"
                             onChange={handleChange}
                         />
                     </label>
